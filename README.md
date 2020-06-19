@@ -78,17 +78,20 @@ python reseq.py -h
 ````
 
 ### known issues
-- if data sets are too small reseq can sometimes drawn the same reads from the fastQ files.
+- if data sets are too small reseq can sometimes draw the same reads from the fastQ files.
 To prevent this reseq is implemented with a seed for each bootstrap repitition. To remove this seed you can comment out line 105
 - FASTQ files sometimes have different header conventions to distinguish between paired end files. In this version reseq is hard coded for the following:  
 
 @xxxxxx 1:N:0:5  
 
-to change this you can edit how the headers should be distinguished at line 99. For example if your header looks like this:  
+to change this you can edit how the headers should be distinguished at line 99. For example if your header strukture looks like this: 
+
 @xxxxxx/1  
 change line 99 from:  
 ````
 R2Dict[lines[0].strip("\n").split(" ")[0]]= x
 ````
 to  
-````R2Dict[lines[0].strip("\n").split("/")[0]]= x
+````
+R2Dict[lines[0].strip("\n").split("/")[0]]= x
+````
