@@ -17,12 +17,13 @@ R (optional)
 For virus detection you need the complete reference sequences which are available at ncbi:
 https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/
 Simply download the sequences, concatenate them and if needed remove new lines from sequences.
-Example Template:
->genome1
+_Example Template:
+>
+\>genome1
 AATTGGCC
->genome2
+\>genome2
 GGTTAAAC
-…
+
 **EDIT YOUR PATH IN reseq.py LINE 19
 
 ### Taxonomy Data:
@@ -39,7 +40,7 @@ bowtie-bio.sourceforge.net/bowtie2/index.shtml
 
 Bowtie needs to create index files for mapping:
 ```
->user$: bowtie2-build yourReferenceData.fna indexOut
+$: bowtie2-build yourReferenceData.fna indexOut
 ```
 
 **EDIT THIS PATH IN reseq.py IN LINE 16 WITH THE PREFIX
