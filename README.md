@@ -49,3 +49,30 @@ $: bowtie2-build yourReferenceData.fna indexOut
 Follow installation here:
 http://www.htslib.org/
 
+
+## Using RESEQ
+```
+python reseq.py -i _input1.fastq_ -j _input2.fastq 
+```
+reseq provides parameters to optimize your run. To view all parameters type:
+````
+python reseq.py -h
+````
+
+````
+  -h, --help        show this help message and exit
+  -i INPUTR1        fastQ input file R1
+  -j INPUTR2        fastQ input file R2
+  -n LOOPCOUNT      number of repetitions
+  -o OUTPUT         output name
+  -s SEQUENCECOUNT  number of sequences extracted
+  -r REPLACE        "n": to draw with out replacement Default=draw with
+                    replacement
+  -d DELETETMP      "n": to keep all temporary files. Default value deletes
+                    all tmp files
+  -S DELETESAM      "n": to keep all sam / bam files. Default value deletes
+                    all files
+  -R USER           "y": use R to apply mixture model for False/True positive
+                    likelihood predictions
+  -t THREADS        number of threads
+````
