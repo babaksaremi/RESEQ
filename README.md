@@ -17,21 +17,21 @@ R (optional)
 For virus detection you need the complete reference sequences which are available at ncbi:
 https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/
 Simply download the sequences, concatenate them and if needed remove new lines from sequences.
-_Example Template:
->
+_Example Template:_
+
 \>genome1
 AATTGGCC
 \>genome2
 GGTTAAAC
 
-**EDIT YOUR PATH IN reseq.py LINE 19
+**EDIT YOUR PATH IN reseq.py LINE 19**
 
 ### Taxonomy Data:
 You can download the taxonomy dumb here:
 https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/
 note that to speed up analysis you can alter the file to only include entries which you are mapping to
 
-**EDIT YOUR PATH IN reseq.py IN LINE: 22
+**EDIT YOUR PATH IN reseq.py IN LINE: 22**
 
 
 ### Bowtie2:
@@ -43,7 +43,7 @@ Bowtie needs to create index files for mapping:
 $: bowtie2-build yourReferenceData.fna indexOut
 ```
 
-**EDIT THIS PATH IN reseq.py IN LINE 16 WITH THE PREFIX
+**EDIT THIS PATH IN reseq.py IN LINE 16 WITH THE PREFIX**
 
 ###   Samtools:
 Follow installation here:
