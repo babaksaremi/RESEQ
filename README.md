@@ -14,15 +14,15 @@ R (optional)
 ## Taxonomy and reference Data.
 
 ### Reference Sequences:
-For virus detection you need the complete reference sequences which are available at ncbi:
-https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/
-Simply download the sequences, concatenate them and if needed remove new lines from sequences.
-_Example Template:_
+For virus detection you need the complete reference sequences which are available at ncbi:  
+https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/  
+Simply download the sequences, concatenate them and if needed remove new lines from sequences.  
+_Example Template:_  
 
-\>genome1
-AATTGGCC
-\>genome2
-GGTTAAAC
+\>genome1  
+AATTGGCC  
+\>genome2  
+GGTTAAAC  
 
 **EDIT YOUR PATH IN reseq.py LINE 19**
 
