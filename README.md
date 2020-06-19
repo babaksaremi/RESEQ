@@ -28,15 +28,15 @@ GGTTAAAC
 
 ### Taxonomy Data:
 You can download the taxonomy dumb here:
-https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/
+(https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/)  
 note that to speed up analysis you can alter the file to only include entries which you are mapping to
 
 **EDIT YOUR PATH IN reseq.py IN LINE: 22**
 
 
 ### Bowtie2:
-Follow installation here:
-bowtie-bio.sourceforge.net/bowtie2/index.shtml
+Follow installation here:  
+(bowtie-bio.sourceforge.net/bowtie2/index.shtml)  
 
 Bowtie needs to create index files for mapping:
 ```
