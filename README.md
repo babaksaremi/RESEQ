@@ -18,9 +18,9 @@ For virus detection you need the complete reference sequences which are availabl
 https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/
 Simply download the sequences, concatenate them and if needed remove new lines from sequences.
 Example Template:
->genome1
+\>genome1
 AATTGGCC
->genome2
+\>genome2
 GGTTAAAC
 …
 EDIT YOUR PATH IN reseq.py LINE 19
