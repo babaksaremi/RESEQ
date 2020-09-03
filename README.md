@@ -87,7 +87,7 @@ To prevent this reseq is implemented with a seed for each bootstrap repitition. 
 to change this you can edit how the headers should be distinguished at line 99. For example if your header strukture looks like this: 
 
 @xxxxxx/1  
-change line 99 from:  
+change line 86 and 99 from:  
 ````
 R2Dict[lines[0].strip("\n").split(" ")[0]]= x
 ````
