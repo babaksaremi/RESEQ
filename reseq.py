@@ -21,7 +21,7 @@ source="/PATH/TO/fullVirusReference.fna"
 # ncbi taxonomy file
 taxSource="/PATH/TO/virusTaxonomy.dmp"
 
-
+#option parser 
 parser = OptionParser()
 parser.add_option("-i", dest="inputR1",default="fastQR1.fastq",help="fastQ input file R1")
 parser.add_option("-j", dest="inputR2",default="fastQR2.fastq",help="fastQ input file R2")
@@ -40,7 +40,7 @@ fastQDict={}
 R2Dict={}
 reference={}
 
-#normal Run
+#normal Run. Standart mapping of fastQ files for later references
 normal="y" # set to n to skip original mapping
 print("mapping Original fastQ")
 if normal=="y":
@@ -58,7 +58,7 @@ if options.deletetmp == "y":
 	os.remove("normalRunsorted.bam.bai")
 
 
-#reference genom
+#reference genome.Processing of fullVirusReference.fna file 
 print("building reference dictionary")
 with open(source,"r") as infile:
 	for line in infile:
@@ -67,7 +67,7 @@ with open(source,"r") as infile:
 			reference[line.split(" ")[0].strip(">")]=[line.split(" ")[0].strip(">"),line[len(line.split(" ")[0])+1:].strip("\n"),len(sequence),sequence.strip("\n")]
 infile.close()
 
-
+# building ncbi taxonomy dictionary from provided file
 taxonomy={}
 with open(taxSource,"r") as infile:
 	for line in infile:
@@ -76,41 +76,41 @@ with open(taxSource,"r") as infile:
 			taxonomy[line.split("|")[1].strip("\t")]=[tax.split(";")[0],tax.split(";")[1]]
 infile.close()
 
-
+# Save both fast Qfiles as dictionary. Later the bootstrap funktion can draw reads from these dictionarys 
 c=0 
 with open (options.inputR1,"r") as infile:
 	lines=[]
 	for line in infile:
-		lines.append(line.replace("\r","")) 
-		if len(lines)==4:
-			lines[0]=lines[0].split(" ")[0]+"\n" # split at header info
-			x="".join(lines[0:4])
-			fastQDict[str(c)]= x
+		lines.append(line.replace("\r","")) # remove newlines on windows machine
+		if len(lines)==4: # one read is represented by 4 lines in a fastQ file
+			lines[0]=lines[0].split(" ")[0]+"\n" # split at header info. CHANGE HERE if depending on header delimiter of fastQ file.
+			x="".join(lines[0:4]) # join 4 lines together (1 read)
+			fastQDict[str(c)]= x # save read in dictionary counter as dict. Key
 			lines=[]
 			c+=1
 infile.close()
-
+#R2 fastQ
 with open (options.inputR2,"r") as infile:
 	lines=[]
 	for line in infile:
 		lines.append(line.replace("\r","")) 
 		if len(lines)==4:
-			x="".join(lines[0:4])
-			R2Dict[lines[0].strip("\n").split(" ")[0]]= x #key for dict has to match other dict. look into header id and split at information of forward/backward
+			x="".join(lines[0:4]) # here use header ID as dict. Key
+			R2Dict[lines[0].strip("\n").split(" ")[0]]= x #key for dict has to match dictionary above. look into header id and split at information of forward/backward
 			lines=[]
 infile.close()
 
-
+#bootstrap function
 def BT(dictA,dictB,loop,count,out,core,delTmp,replace):  # bootstrap
-	numpy.random.seed(loop) # set seed --> for small dataSets 
-	if replace != "y":
+	numpy.random.seed(loop) # set seed --> for small dataSets --> README
+	if replace != "y":  # generate a list of random numbers between one and total read count
 		sample=numpy.random.choice(len(fastQDict),int(count),replace=False)
 	else: 
 		sample=numpy.random.choice(len(fastQDict),int(count))
 
-	outputR1= open(out+str(loop)+"R1.fastq","w")
+	outputR1= open(out+str(loop)+"R1.fastq","w") 
 	outputR2= open(out+str(loop)+"R2.fastq","w")
-	for i in sample:
+	for i in sample:  # with the list of random numbers (matches dict. key) write the reads into output file. Use R1 dictionary to find paired end read from R2 dictionary
 		if dictA[str(i)].split("\n")[0].split("/")[0] in dictB: # matches the keys due to header norm this part is special for example data (" ") split here
 			outputR1.write(dictA[str(i)])
 			outputR2.write(dictB[dictA[str(i)].split("\n")[0].split("/")[0]])
@@ -121,7 +121,7 @@ def BT(dictA,dictB,loop,count,out,core,delTmp,replace):  # bootstrap
 	outputR2.close()
 	
 
-	
+# process mapping out to indexed and sorted bam file by using samtools. Calculate stats for each mapped fastQ pair. Complement information with taxonomy file
 def stats(out,loop,core,taxonomyDict,refDict,delSam):
 
 	bamCmd="samtools view -bS -@ "+core+" "+out+str(loop)+".sam > "+str(loop)+"tmp.bam"
@@ -177,21 +177,21 @@ def stats(out,loop,core,taxonomyDict,refDict,delSam):
 
 	
 print("bootstrap")
-
+# generate for each bootstrap step and indipendent proccess. --> parallelized 
 process=[]
 mem=(psutil.virtual_memory().available >> 30) / 20  #{ get ram and use bit shift operator in gb
 for i in range(int(options.loopCount)):
 	    
 	while mem == len(process):								# this part stops ram from overflowing. one process here is assumed to need 20 gb of data and wiht our ram available we can only start "so many"
 		process=[j for j in process if j.is_alive()==True]  #} this part can be comment out to remove the limiter (same for below)
-	p=Process(target=BT,args=(fastQDict,R2Dict,i,options.sequenceCount,options.output,options.threads,options.deletetmp,options.replace))
+	p=Process(target=BT,args=(fastQDict,R2Dict,i,options.sequenceCount,options.output,options.threads,options.deletetmp,options.replace)) 
 	p.start()
 	process.append(p)
-for p in process:
+for p in process: # continue only if all bootstrap processes are finished 
 	p.join()
 
 print("mapping")
-
+# mapp all generated fastQ files with bowtie
 for i in range(int(options.loopCount)):
 	bowtieCMD="bowtie2 -p "+options.threads+" -x "+bowtieIndex+" -1 "+options.output+str(i)+"R1.fastq"+" -2 "+options.output+str(i)+"R2.fastq"+" -S "+options.output+str(i)+".sam"
 	bowtie=subprocess.Popen([bowtieCMD],stdout=subprocess.PIPE,shell=True)
