@@ -165,6 +165,8 @@ def stats(out,loop,core,taxonomyDict,refDict,delSam):
 			
 		cov.append(int(line.split("\t")[2]))
 		seq+=1
+		statOut.write(ID+"\t"+reference[ID][1].split(",")[0]+"\t"+tax[0]+"\t"+tax[1]+"\t"+pysam.view("-c",str(loop)+"sorted.bam",ID).strip("\n")+"\t"+str(seq)+"\t"+str(numpy.mean(cov))+"\t"+str(numpy.median(cov))+"\t"+str((float(seq)-float(zeroCounter))/float(seq)*float(100))+"\n")
+	
 	statOut.close()
 
 
